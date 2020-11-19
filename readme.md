@@ -2,9 +2,9 @@
 Container Tracking Devices é uma API escrita em Go que permite a criação e monitoramento de containers
 
 ## Utilização
-Para utilizar a API é necessário ter o [Docker](https://docs.docker.com/get-docker/) instalado.
+Para utilizar a API é necessário ter o [Docker](https://docs.docker.com/get-docker/) e [Docker-Compose](https://docs.docker.com/compose/install/) instalado.
 
-Após a instalação, basta utilizar o [seguinte comando](https://docs.docker.com/compose/reference/up/)
+Após a instalação, basta utilizar o [seguinte comando](https://docs.docker.com/compose/reference/up/) na raiz do projeto
 
 ```bash
 docker-compose up --build
