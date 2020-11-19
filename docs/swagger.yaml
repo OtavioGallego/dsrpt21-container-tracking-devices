@@ -1,0 +1,313 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  Container:
+    description: Container que será monitorado
+    properties:
+      altura_externa:
+        description: Altura externa do container, em metros
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: AlturaExterna
+      altura_interna:
+        description: Altura interna do container, em metros
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: AlturaInterna
+      comprimento_externo:
+        description: Comprimento externo do container, em metros
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: ComprimentoExterno
+      comprimento_interno:
+        description: Comprimento interno do container, em metros
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: ComprimentoInterno
+      id:
+        description: ID do container
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ID
+      largura_externa:
+        description: Largura externa do container, em metros
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: LarguraExterna
+      largura_interna:
+        description: Largura interna do container, em metros
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: LarguraInterna
+      peso_carregamento:
+        description: Peso do carregamento, baseado na quantidade de produtos e no peso médio
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: PesoCarregamento
+      produto_id:
+        description: ID do produto armazenado no container
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ProdutoID
+      quantidade:
+        description: Quantidade de produtos armazenados
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: Quantidade
+      valor_carregamento:
+        description: Valor do carregamento, baseado na quantidade de produtos e no preço médio
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: ValorCarregamento
+      volume:
+        description: Volume do carregamento, baseado em suas dimensões
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: Volume
+    required:
+    - produto_id
+    - quantidade
+    - comprimento_externo
+    - largura_externa
+    - altura_externa
+    - comprimento_interno
+    - largura_interna
+    - altura_interna
+    - valor_carregamento
+    - peso_carregamento
+    - volume
+    type: object
+    x-go-package: github.com/OtavioGallego/dsrpt21-container-tracking-devices/models
+  Localizacao:
+    description: Localizacao representa uma localização registrada para um container
+    properties:
+      container_id:
+        description: ID do container
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ContainerID
+      data:
+        description: ID do container
+        format: date-time
+        type: string
+        x-go-name: Data
+      id:
+        description: ID da localização
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ID
+      latitude:
+        description: Latitude da posição registrada
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: Latitude
+      longitude:
+        description: ID do container
+        format: double
+        minimum: 1
+        type: number
+        x-go-name: Longitude
+    required:
+    - container_id
+    - latitude
+    - longitude
+    type: object
+    x-go-package: github.com/OtavioGallego/dsrpt21-container-tracking-devices/models
+  Produto:
+    description: Produto que será armazenado dentro de um container
+    properties:
+      id:
+        description: ID do produto
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ID
+      nocivo:
+        description: Indica se o produto é nocivo
+        type: boolean
+        x-go-name: Nocivo
+      nome:
+        description: Nome do produto
+        maxLength: 50
+        type: string
+        x-go-name: Nome
+      peso_medio:
+        description: Peso médio do produto
+        format: double
+        minimum: 0.01
+        type: number
+        x-go-name: PesoMedio
+      preco_medio:
+        description: Preço médio do produto
+        format: double
+        minimum: 0.01
+        type: number
+        x-go-name: PrecoMedio
+      tipo:
+        description: Tipo do produto
+        maxLength: 50
+        type: string
+        x-go-name: Tipo
+    required:
+    - nome
+    - tipo
+    - preco_medio
+    - peso_medio
+    type: object
+    x-go-package: github.com/OtavioGallego/dsrpt21-container-tracking-devices/models
+host: localhost:5000
+info:
+  description: Documentação da API - Container Tracking Devices
+  title: API - Container Tracking Devices
+  version: 1.0.0
+paths:
+  /containers:
+    post:
+      description: Cadastra um container que comporta um produto
+      operationId: cadastrarContainer
+      parameters:
+      - description: Container que será criado. Note que em caso de cadastro o id é ignorado
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Container'
+      responses:
+        "201":
+          $ref: '#/responses/responseContainer'
+        "400":
+          $ref: '#/responses/erroGenerico'
+        "501":
+          $ref: '#/responses/erroGenerico'
+      tags:
+      - Containers
+  /containers/{containerId}:
+    get:
+      description: Returna um container salvo no banco de dados
+      operationId: buscarContainer
+      parameters:
+      - description: Id do container a ser buscado
+        format: int64
+        in: path
+        name: containerId
+        required: true
+        type: integer
+        x-go-name: ContainerID
+      responses:
+        "200":
+          $ref: '#/responses/responseContainer'
+        "400":
+          $ref: '#/responses/erroGenerico'
+        "500":
+          $ref: '#/responses/erroGenerico'
+      tags:
+      - Containers
+  /containers/{containerId}/localizacoes:
+    get:
+      description: Returna todas as localizaçṍes registradas para um container
+      operationId: buscarLocalizacoes
+      parameters:
+      - description: Id do container a ser buscado
+        format: int64
+        in: path
+        name: containerId
+        required: true
+        type: integer
+        x-go-name: ContainerID
+      responses:
+        "200":
+          $ref: '#/responses/responseLocalizacoes'
+        "400":
+          $ref: '#/responses/erroGenerico'
+        "500":
+          $ref: '#/responses/erroGenerico'
+      tags:
+      - Localizações
+    post:
+      description: Cadastra uma localização para um container
+      operationId: cadastrarLocalizacao
+      parameters:
+      - description: Id do container a ser buscado
+        format: int64
+        in: path
+        name: containerId
+        required: true
+        type: integer
+        x-go-name: ContainerID
+      responses:
+        "201":
+          $ref: '#/responses/responseLocalizacao'
+        "400":
+          $ref: '#/responses/erroGenerico'
+        "500":
+          $ref: '#/responses/erroGenerico'
+      tags:
+      - Localizações
+  /produtos:
+    post:
+      description: Cadastra um novo produto que pode ser armazenado em um container
+      operationId: cadastrarProduto
+      parameters:
+      - description: Produto que será criado. Note que em caso de cadastro o id é ignorado
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Produto'
+      responses:
+        "200":
+          $ref: '#/responses/responseProduto'
+        "400":
+          $ref: '#/responses/erroGenerico'
+        "501":
+          $ref: '#/responses/erroGenerico'
+      tags:
+      - Produtos
+produces:
+- application/json
+responses:
+  erroGenerico:
+    description: Mensagem de erro genérica
+    schema:
+      properties:
+        mensagem:
+          type: string
+          x-go-name: Mensagem
+      type: object
+  responseContainer:
+    description: ""
+    schema:
+      $ref: '#/definitions/Container'
+  responseLocalizacao:
+    description: ""
+    schema:
+      $ref: '#/definitions/Localizacao'
+  responseLocalizacoes:
+    description: ""
+    schema:
+      items:
+        $ref: '#/definitions/Localizacao'
+      type: array
+  responseProduto:
+    description: ""
+    schema:
+      $ref: '#/definitions/Produto'
+schemes:
+- http
+swagger: "2.0"
